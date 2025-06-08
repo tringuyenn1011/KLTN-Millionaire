@@ -149,7 +149,7 @@ public class GameProcess : MonoBehaviour
             }
             question = new Question();
 
-            //StartCoroutine(GenerateNewQuestion()); thêm
+            //StartCoroutine(GenerateNewQuestion()); 
 
             isLifeline5050JustUsed = false;
         }

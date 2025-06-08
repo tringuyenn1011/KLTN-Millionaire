@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -45,6 +46,8 @@ public class UIManager : MonoBehaviour
     private bool[] panelsStates = new bool[11];
     [HideInInspector]
     public bool allAnswersAreDisplayed = false;
+
+    private Coroutine dialogCoroutine;
 
     
 
@@ -258,6 +261,60 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void LifelinePhone()
+    {
+        phoneDialogText.text = "";
+        if (allAnswersAreDisplayed)
+        {
+            GeminiAI.instance.GeneratePhoneDialog();
+        }
+    }
+
+    public Coroutine RunDialogLines(List<(string text, float delay)> dialogLines)
+    {
+        return StartCoroutine(RunDialogCoroutine(dialogLines));
+    }
+
+    private IEnumerator RunDialogCoroutine(List<(string text, float delay)> dialogLines)
+    {
+        int timeOfAnswer = 30;/*Random.Range(0, 25);*/ // time on tiner when friend will give an answer
+        int timer = 30;
+
+        dialogCoroutine = StartCoroutine(RunDialogLines1(dialogLines));
+        while (timer >= 0)
+        {
+            phonePanel.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "" + timer;
+            if (timeOfAnswer <= 1)
+            {
+                GameProcess.instance.PlaySoundByNumber(83);
+            }
+            timer--;
+            yield return new WaitForSeconds(1f);
+        }
+
+        // Hết giờ → hủy hội thoại
+        if (dialogCoroutine != null)
+        {
+            StopCoroutine(dialogCoroutine);
+        }
+
+            phonePanel.transform.GetChild(1).GetComponent<Animator>().SetBool("HideTimer", true);
+            phonePanel.transform.GetChild(0).gameObject.SetActive(false);
+            phonePanel.transform.GetChild(3).GetComponent<Button>().interactable = true;
+            phonePanel.SetActive(false);
+            GameProcess.instance.UnPauseMusic();
+    }
+
+    IEnumerator RunDialogLines1(List<(string text, float delay)> dialogLines)
+    {
+        foreach (var dialog in dialogLines)
+        {
+            Debug.LogWarning(dialog.text);
+            phoneDialogText.text = dialog.text;
+            yield return new WaitForSeconds(dialog.delay + 2);
+        }
+    }
+
     /*
     /// <summary>
     /// Makes logenze panel active and creating start animation
@@ -290,6 +347,7 @@ public class UIManager : MonoBehaviour
         lozengePanel.transform.GetChild(6).GetChild(1).gameObject.SetActive(true);
     }
     */
+
 
     /// <summary>
     /// Highlights chosed answer at logenze panel
@@ -567,19 +625,20 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void ResetMoneyTreePanel()
     {
+        moneyTreePanel.transform.GetChild(0).GetComponent<Image>().sprite = moneyTreeSprites[1];
+        moneyTreePanel.transform.GetChild(0).GetComponent<Button>().interactable = true;
+
+        moneyTreePanel.transform.GetChild(1).GetComponent<Image>().sprite = moneyTreeSprites[4];
+        moneyTreePanel.transform.GetChild(1).GetComponent<Button>().interactable = true;
+
+        moneyTreePanel.transform.GetChild(2).GetComponent<Image>().sprite = moneyTreeSprites[7];
+        moneyTreePanel.transform.GetChild(2).GetComponent<Button>().interactable = true;
         for (int i = 3; i < 18; i++)
         {
             //hiding all diamonds
             moneyTreePanel.transform.GetChild(i).GetChild(2).gameObject.SetActive(false);
+            moneyTreePanel.transform.GetChild(i).GetChild(1).GetComponent<Text>().text = GameFormat.moneyTreeUK[i - 3];
 
-            if (GameManager.itIsUkrainianVersion)
-            {
-                moneyTreePanel.transform.GetChild(i).GetChild(1).GetComponent<Text>().text = GameFormat.moneyTreeUa[i - 3];
-            }
-            else if (GameManager.itIsEnglishVersion)
-            {
-                moneyTreePanel.transform.GetChild(i).GetChild(1).GetComponent<Text>().text = GameFormat.moneyTreeUK[i - 3];
-            }
         }
     }
 
@@ -824,10 +883,15 @@ public class UIManager : MonoBehaviour
     {
         if (allAnswersAreDisplayed)
         {
-            GameProcess.instance.PlayLifelineAudienceMusic();
-            LifelineAudience lifelineAudience = new LifelineAudience();
+            GeminiAI.instance.GenerateAudience();
+        }
+    }
 
-            int[] result = lifelineAudience.Use();
+    public void LifelineAudiensePlay(int[] result)
+    {
+        if (allAnswersAreDisplayed)
+        {
+            GameProcess.instance.PlayLifelineAudienceMusic();
 
             StartCoroutine(CloseMoneyTreePanel());
             audiencePanel.SetActive(true);
@@ -894,13 +958,7 @@ public class UIManager : MonoBehaviour
         canCloseAudiencePanel = true;
     }
 
-    public void LifelinePhone()
-    {
-        if (allAnswersAreDisplayed)
-        {
-            GeminiAI.instance.GeneratePhoneDialog();
-        }
-    }
+    
 
     public void AudiencePanelClose()
     {

@@ -23,82 +23,44 @@ public abstract class GameFormat
         get { return this.moneyTree; }
     }
 
-    private string[] moneyTreePrizeUa = new string[]
-    {
-        "",
-        "100",
-        "200",
-        "300",
-        "500",
-        "1 000",
-        "2 000",
-        "4 000",
-        "8 000",
-        "16 000",
-        "32 000",
-        "64 000",
-        "125 000",
-        "250 000",
-        "500 000",
-        "1 000 000",
-    };
-
     private string[] moneyTreePrizeUK = new string[]
     {
         "",
-        "100",
-        "200",
-        "300",
-        "500",
-        "1,000",
-        "2,000",
-        "4,000",
-        "8,000",
-        "16,000",
-        "32,000",
-        "64,000",
-        "125,000",
-        "250,000",
-        "500,000",
-        "1,000,000",
+        "100 USD",
+        "200 USD",
+        "300 USD",
+        "500 USD",
+        "1,000 USD",
+        "2,000 USD",
+        "4,000 USD",
+        "8,000 USD",
+        "16,000 USD",
+        "32,000 USD",
+        "64,000 USD",
+        "125,000 USD",
+        "250,000 USD",
+        "500,000 USD",
+        "1,000,000 USD",
     };
 
-    public static string[] moneyTreeUa = new string[]
-    {
-        "15     1 000 000",
-        "14     500 000",
-        "13     250 000",
-        "12     125 000",
-        "11     64 000",
-        "10     32 000",
-        "   9    16 000",
-        "   8    8 000",
-        "   7    4 000",
-        "   6    2 000",
-        "   5    1 000",
-        "   4    500",
-        "   3    300",
-        "   2    200",
-        "   1    100",
-    };
 
     public static string[] moneyTreeUK = new string[]
        {
-        "15    1,000,000",
-        "14    500,000",
-        "13    250,000",
-        "12    125,000",
-        "11    64,000",
-        "10    32,000",
-        " 9    16,000",
-        " 8    8,000",
-        " 7    4,000",
-        " 6    2,000",
-        " 5    1,000",
-        " 4    500",
-        " 3    300",
-        " 2    200",
-        " 1    100",
+        "15    1,000,000 USD",
+        "14    500,000 USD",
+        "13    250,000 USD",
+        "12    125,000 USD",
+        "11    64,000 USD",
+        "10    32,000 USD",
+        " 9    16,000 USD",
+        " 8    8,000 USD",
+        " 7    4,000 USD",
+        " 6    2,000 USD",
+        " 5    1,000 USD",
+        " 4    500 USD",
+        " 3    300 USD",
+        " 2    200 USD",
+        " 1    100 USD",
        };
 
     public Lifeline[] lifelines;
@@ -126,14 +88,14 @@ public abstract class GameFormat
             throw new UnityException("Question with this number does not exist!");
         }
 
-        if (GameManager.itIsEnglishVersion)
-        {
+        // if (GameManager.itIsEnglishVersion)
+        // {
             return moneyTreePrizeUK[questionNumber];
-        }
-        else
-        {
-            return moneyTreePrizeUa[questionNumber];
-        }
+        // }
+        // else
+        // {
+        //     //return moneyTreePrizeUa[questionNumber];
+        // }
     }
 
     /// <summary>
@@ -161,6 +123,7 @@ public abstract class GameFormat
         {
             i++;
         }
-        return GameManager.itIsEnglishVersion ? moneyTreePrizeUK[numberOfQuestionsWithGuarantedPrizes[i - 1]] : moneyTreePrizeUa[numberOfQuestionsWithGuarantedPrizes[i - 1]];
+        // return GameManager.itIsEnglishVersion ? moneyTreePrizeUK[numberOfQuestionsWithGuarantedPrizes[i - 1]] : moneyTreePrizeUa[numberOfQuestionsWithGuarantedPrizes[i - 1]];
+        return moneyTreePrizeUK[numberOfQuestionsWithGuarantedPrizes[i - 1]];
     }
 }

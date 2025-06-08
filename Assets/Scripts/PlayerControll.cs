@@ -160,12 +160,12 @@ public class PlayerControll : MonoBehaviour
                 ignoreSitInput = true;
                 SitDown();
             }
-            //if player is siting
-            else if (!isWalking && !ignoreSitInput)
-            {
-                ignoreSitInput = true;
-                StandUp();
-            }
+            // //if player is siting
+            // else if (!isWalking && !ignoreSitInput)
+            // {
+            //     ignoreSitInput = true;
+            //     StandUp();
+            // }
         }
     }
 

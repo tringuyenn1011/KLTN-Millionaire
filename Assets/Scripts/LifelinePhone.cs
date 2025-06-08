@@ -12,7 +12,7 @@ public class LifelinePhone : MonoBehaviour
 
     [SerializeField] private GeminiAI aiGenerator; // Tham chiếu đến GeminiAI
     private List<(string text, float delay)> dialogLines = new List<(string, float)>();
-
+    
 
     void Start()
     {
@@ -124,66 +124,17 @@ public class LifelinePhone : MonoBehaviour
         UIManager.instance.StartCoroutine(UIManager.instance.CloseMoneyTreePanel());
         UIManager.instance.phonePanel.SetActive(true);
 
-        Debug.Log("Calling...");
-        UIManager.instance.phoneDialogText.text = "\t  Calling...\n";
-
-        yield return new WaitForSeconds(3f);
-
-        //Debug.Log("- Yes");
-        UIManager.instance.phoneDialogText.text = "\t  Calling...\n\t- Yes";
-
         yield return new WaitForSeconds(1.5f);
 
-        //Debug.Log("- Hello, it's Who wants to be a milionire! How do you thing, which answer is right?f");
-        UIManager.instance.phoneDialogText.text = "\t- Yes\n\t- Hello, it's Who wants to be a milionire!";
-        yield return new WaitForSeconds(2f);
-        UIManager.instance.phoneDialogText.text = "\t- Hello, it's Who wants to be a milionire!\n\t  How do you thing, which answer is right?";
 
-        yield return new WaitForSeconds(1.5f);
-
-        int timeOfAnswer = 30;/*Random.Range(0, 25);*/ // time on tiner when friend will give an answer
-        int timer = 30;
 
         UIManager.instance.phonePanel.transform.GetChild(1).gameObject.SetActive(true);
-            //litle dellay
+
+        timerAnimator.SetBool("StartCountdown", true);
+
+        //litle dellay
         yield return new WaitForSeconds(0.255f);
         GameProcess.instance.PlaySoundByNumber(69);
-
-        while (timer >= 0)
-        {
-            UIManager.instance.phonePanel.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "" + timer;
-
-
-            // if (timeOfAnswer == timer)
-            // {
-                if (timeOfAnswer >= 1)
-                {
-                    GameProcess.instance.PlaySoundByNumber(83);
-                    
-                }
-
-                Debug.LogWarning(dialogLines.Count);
-                // Hiển thị từng dòng hội thoại
-                foreach (var dialog in dialogLines)
-                {
-                    Debug.LogWarning(dialog);
-                    Debug.LogWarning("oke");
-                    UIManager.instance.phoneDialogText.text = dialog.text;
-                    yield return new WaitForSeconds(dialog.delay + 3);
-                }
-
-                UIManager.instance.phonePanel.transform.GetChild(1).GetComponent<Animator>().SetBool("HideTimer", true);
-                UIManager.instance.phonePanel.transform.GetChild(0).gameObject.SetActive(false);
-
-                UIManager.instance.phonePanel.transform.GetChild(3).GetComponent<Button>().interactable = true;
-                GameProcess.instance.UnPauseMusic();
-            // }
-
-            timer--;
-            yield return new WaitForSeconds(1f);
-        }
-
-
 
         Debug.LogWarning($"aiGenerator: {aiGenerator}");
         if (aiGenerator != null)
@@ -206,14 +157,17 @@ public class LifelinePhone : MonoBehaviour
             };
         }
 
+        UIManager.instance.RunDialogLines(dialogLines);
+
+
+        
         
 
-        // Kết thúc animation
-        UIManager.instance.phonePanel.transform.GetChild(1).GetComponent<Animator>().SetBool("HideTimer", true);
-        UIManager.instance.phonePanel.transform.GetChild(0).gameObject.SetActive(false);
-        UIManager.instance.phonePanel.transform.GetChild(3).GetComponent<Button>().interactable = true;
-        GameProcess.instance.UnPauseMusic();
+
+
     }
+    
+    
 
     // public IEnumerator LifelinePhoneAnimation(string answer)
     // {
